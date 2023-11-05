@@ -8,6 +8,7 @@ from telethon.events.newmessage import NewMessage
 from app.logic.singleton import SingletonMeta
 
 from .broadcast import BROADCAST, CHANNEL
+from .tts import read_message
 
 chat_patterns: dict[int, set[str]] = {}
 
@@ -19,29 +20,25 @@ async def handler(event: NewMessage.Event):
     assert chat is not None
     patterns = chat_patterns.get(chat)
     if not patterns or any(p in event.message.text.lower() for p in patterns):
-        # read_message(event.message.text)
+        wav_bytes = read_message(event.message.text)
 
-        # TODO: Send .wav files instead
         logging.info(f"Sending {event.message.text} to {CHANNEL}")
-        await BROADCAST.publish(channel=CHANNEL, message=event.message.text)
+        # await BROADCAST.publish(channel=CHANNEL, message=event.message.text)
+        await BROADCAST.publish(channel=CHANNEL, message=wav_bytes)
         logging.info(f"Sent {event.message.text} to {CHANNEL}")
 
 
 class TG(metaclass=SingletonMeta):
-    def __init__(
-        self,
-        phone_number: str | None = None,
-        api_id: str | None = None,
-        api_hash: str | None = None,
-    ):
+    def __init__(self, api_id: str | None = None, api_hash: str | None = None):
         logging.info("Initializing TG")
 
-        phone_number = phone_number or os.getenv("PHONE_NUMBER")
+        # phone_number = phone_number or os.getenv("PHONE_NUMBER")
+        session_name = "tg_reader"
         api_id = api_id or os.getenv("API_ID")
         api_hash = api_hash or os.getenv("API_HASH")
-        assert phone_number and api_id and api_hash
+        assert api_id and api_hash
 
-        self.client = TelegramClient(phone_number, int(api_id), api_hash)
+        self.client = TelegramClient(session_name, int(api_id), api_hash)
         self.lock = asyncio.Lock()
 
     async def add_handler(self, chat: str):

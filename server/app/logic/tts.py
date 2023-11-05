@@ -9,15 +9,19 @@ warnings.filterwarnings(
 )
 
 
-tts = TTS(device="cpu")
+# tts = TTS(device="cpu")
+tts = None
 
-
-def read_message(s: str):
+def read_message(s: str) -> bytes:
+    global tts
+    if tts is None:
+        tts = TTS(device="cpu")
     with io.BytesIO() as b:
         _, output_text = tts.tts(s, Voices.Dmytro.value, Stress.Dictionary.value, b)
-
         audio_data = b.getvalue()
 
     # Play audio
-    audio = AudioSegment.from_wav(io.BytesIO(audio_data))
-    play(audio)
+    # return s
+    return audio_data
+    # audio = AudioSegment.from_wav(io.BytesIO(audio_data))
+    # play(audio)

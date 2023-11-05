@@ -16,5 +16,10 @@ async def websocket_endpoint(websocket: WebSocket):
     async with BROADCAST.subscribe(channel=CHANNEL) as subscriber:
         logging.info(f"Subscribed to {CHANNEL} in websocket {websocket.client}")
         async for event in subscriber:
-            logging.info(f"Sending {event.message} to websocket {websocket.client}")
-            await websocket.send_text(event.message)
+            logging.info(
+                f"Sending {len(event.message)} bytes to websocket {websocket.client}"
+            )
+            await websocket.send_bytes(event.message)
+            logging.info(
+                f"Sent {len(event.message)} bytes to websocket {websocket.client}"
+            )
