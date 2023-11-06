@@ -22,7 +22,6 @@ jobs:
           cache: true
           cache-key: "flutter-:os:-:channel:-:version:-:arch:-:hash:" # optional, change this to force refresh cache
           cache-path: "${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:" # optional, change this to specify the cache path
-          architecture: x64 # optional, x64 or arm64
 
       - name: Get Flutter dependencies
         run: flutter pub get
@@ -37,13 +36,13 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: apk
-          path: build/app/outputs/flutter-apk/*.apk
+          path: client/build/app/outputs/flutter-apk/*.apk
 
       - name: Upload App Bundle Artifact
         uses: actions/upload-artifact@v2
         with:
           name: appbundle
-          path: build/app/outputs/bundle/release/*.aab
+          path: client/build/app/outputs/bundle/release/*.aab
 
   build-ios:
     name: Build iOS
@@ -60,7 +59,6 @@ jobs:
           cache: true
           cache-key: "flutter-:os:-:channel:-:version:-:arch:-:hash:" # optional, change this to force refresh cache
           cache-path: "${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:" # optional, change this to specify the cache path
-          architecture: x64 # optional, x64 or arm64
 
       - name: Get Flutter dependencies
         run: flutter pub get
@@ -78,4 +76,4 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: ipa
-          path: build/ios/ipa/*.ipa
+          path: client/build/ios/ipa/*.ipa
