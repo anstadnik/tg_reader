@@ -14,7 +14,7 @@ jobs:
       run:
         working-directory: ./client
     steps:
-      - uses: ./.github/workflows/setup_flutter.yml
+      - uses: ./.github/workflows/setup.yml
 
       - name: Build APK
         run: flutter build apk
@@ -41,7 +41,7 @@ jobs:
       run:
         working-directory: ./client
     steps:
-      - uses: ./.github/workflows/setup_flutter.yml
+      - uses: ./.github/workflows/setup.yml
 
       - name: Install CocoaPods
         run: sudo gem install cocoapods
