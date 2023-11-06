@@ -14,6 +14,8 @@ jobs:
       run:
         working-directory: ./client
     steps:
+      - uses: actions/checkout@v2
+
       - uses: ./.github/workflows/setup.yml
 
       - name: Build APK
@@ -41,6 +43,8 @@ jobs:
       run:
         working-directory: ./client
     steps:
+      - uses: actions/checkout@v2
+
       - uses: ./.github/workflows/setup.yml
 
       - name: Install CocoaPods
