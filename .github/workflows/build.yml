@@ -1,0 +1,79 @@
+name: Flutter Build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-android:
+    name: Build Android
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./client
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: "stable"
+          cache: true
+          cache-key: "flutter-:os:-:channel:-:version:-:arch:-:hash:" # optional, change this to force refresh cache
+          cache-path: "${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:" # optional, change this to specify the cache path
+
+      - name: Get Flutter dependencies
+        run: flutter pub get
+
+      - name: Build APK
+        run: flutter build apk
+
+      - name: Build App Bundle
+        run: flutter build appbundle
+
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: apk
+          path: client/build/app/outputs/flutter-apk/*.apk
+
+      - name: Upload App Bundle Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: appbundle
+          path: client/build/app/outputs/bundle/release/*.aab
+
+  build-ios:
+    name: Build iOS
+    runs-on: macos-latest
+    defaults:
+      run:
+        working-directory: ./client
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: "stable"
+          cache: true
+          cache-key: "flutter-:os:-:channel:-:version:-:arch:-:hash:" # optional, change this to force refresh cache
+          cache-path: "${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:" # optional, change this to specify the cache path
+
+      - name: Get Flutter dependencies
+        run: flutter pub get
+
+      - name: Install CocoaPods
+        run: sudo gem install cocoapods
+
+      - name: Install Pods
+        run: cd ios && pod install
+
+      - name: Build IPA
+        run: flutter build ios --release --no-codesign
+
+      - name: Upload IPA Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: ipa
+          path: client/build/ios/iphoneos/*.app
