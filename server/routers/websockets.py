@@ -7,9 +7,9 @@ router = APIRouter()
 
 
 @router.websocket("/ws")
-async def websocket_endpoint(websocket: WebSocket, request: Request):
-    broadcast = request.app.state.broadcast
-    channel = request.app.state.channel
+async def websocket_endpoint(websocket: WebSocket):
+    broadcast = websocket.app.state.broadcast
+    channel = websocket.app.state.channel
     logging.info(f"Accepting websocket {websocket.client}")
     await websocket.accept()
     logging.info(f"Accepted websocket {websocket.client}")
